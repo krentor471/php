@@ -4,12 +4,12 @@ require_once 'db.php';
 function getContacts($sort = 'default', $page = 1) {
     global $pdo;
     
-    $per_page = 10;
-    $offset = ($page - 1) * $per_page;
+    $limit = 10;
+    $offset = ($page - 1) * $limit;
     
     $count_query = "SELECT COUNT(*) FROM contacts";
     $total_records = $pdo->query($count_query)->fetchColumn();
-    $total_pages = ceil($total_records / $per_page);
+    $total_pages = ceil($total_records / $limit);
     
     $order_by = match($sort) {
         'surname' => 'surname ASC, name ASC',
@@ -17,7 +17,7 @@ function getContacts($sort = 'default', $page = 1) {
         default => 'id ASC'
     };
     
-    $query = "SELECT * FROM contacts ORDER BY $order_by LIMIT $per_page OFFSET $offset";
+    $query = "SELECT * FROM contacts ORDER BY $order_by LIMIT $limit OFFSET $offset";
     $stmt = $pdo->query($query);
     $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
